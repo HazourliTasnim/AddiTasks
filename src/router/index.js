@@ -1,61 +1,56 @@
-import { createRouter, createWebHashHistory } from 'vue-router';  // Importer Vue Router et le mode de navigation (hash)
+import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import AboutView from '../views/AboutView.vue';
 import ContactView from '../views/ContactView.vue';
-import Login from '@/views/Login.vue';
-import Register from '@/views/Register.vue';
+import LoginView from '@/views/LoginView.vue';
+import RegisterView from '@/views/RegisterView.vue';
+import TodoCalendar from '../views/TodoCalendar.vue';
 import AddView from '@/views/AddView.vue';  // Page pour ajouter une tâche
-import TaskManager from '../components/TaskManager.vue';  // Composant TaskManager
-import TaskList from '@/components/TaskList.vue'; // Composant TaskList
 
-// Définition des routes pour l'application
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView,  // Page d'accueil
+    component: HomeView,
   },
   {
     path: '/about',
     name: 'about',
-    component: AboutView, // Page "À propos"
+    component: AboutView,
   },
   {
     path: '/contact',
     name: 'contact',
-    component: ContactView, // Page "Contact"
+    component: ContactView,
   },
   {
     path: '/login',
     name: 'login',
-    component: Login,  // Page de connexion
+    component: LoginView,
   },
   {
     path: '/register',
     name: 'register',
-    component: Register, // Page d'inscription
+    component: RegisterView,
+  },
+  {
+    path: '/todo-calendar',
+    name: 'TodoCalendar',
+    component: TodoCalendar,
   },
   {
     path: '/add', // Page pour ajouter une tâche
-    name: 'add',
+    name: 'add-view',
     component: AddView,  // Le composant de la page d'ajout
+    props: route => ({ date: route.query.date }),  
   },
-  {
-    path: '/tasks',   // Route pour afficher TaskList
-    name: 'tasks',
-    component: TaskList
-  },
-  {
-    path: '/task-manager', // Route pour TaskManager
-    name: 'task-manager',
-    component: TaskManager, // Le composant TaskManager
-  }
+ 
+
 ];
 
-// Création de l'instance du routeur avec l'historique en mode hash
 const router = createRouter({
-  history: createWebHashHistory(),  // Mode de navigation avec hash (préféré pour les applications SPAs)
-  routes,  // Routes définies ci-dessus
+  history: createWebHistory(process.env.BASE_URL),
+  routes,
 });
 
-export default router;  // Exporte le routeur configuré
+export default router;

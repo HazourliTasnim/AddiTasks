@@ -1,9 +1,9 @@
 <template>
   <div class="contact">
-    <h1 class="display-4 mt-5 mt-lg-5 title fw-bold">Contactez-Nous</h1>
+    <h1 class="display-4 mt-5 mt-lg-5 title text-center fw-bold mb-8 mb-md-0">Contactez-Nous</h1>
     <div class="container-fluid">
       <div class="row justify-content-center align-items-center">
-        <!-- Text Column (on left) -->
+
         <div class="col-md-5 text-md-start text-center">
           <p class="lead">
             Si vous avez des questions ou des suggestions, n’hésitez pas à nous contacter !<br><br>
@@ -12,9 +12,9 @@
           </p>
         </div>
 
-        <!-- Image Column (on right) - hidden on medium screens and below -->
+
         <div class="col-md-5 d-none d-md-block">
-          <img src="@/assets/contact.png" alt="Contactez-Nous" title="GoalGetter Contact" class="img-fluid">
+              <img :src="require('@/assets/contact.png')" alt="contact" class="img-fluid d-none d-md-block mt-9" title="GoalGetter todolist">
         </div>
       </div>
     </div>
@@ -22,14 +22,19 @@
 </template>
 
 <script>
-export default {}
+export default {
+    name: 'ContactView'
+}
 </script>
 
 <style scoped>
 .title {
   color: hsl(268, 70%, 30%);
   font-size: 2rem; /* Adjust font size for medium and up */
-  margin-bottom: 50px;
+}
+img{
+  width: 900px;
+  height: 300px;
 }
 
 

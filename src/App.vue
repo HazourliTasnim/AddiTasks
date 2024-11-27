@@ -1,56 +1,48 @@
 <template>
   <v-app>
-    <!-- Barre de navigation -->
-    <v-app-bar flat max-height="65">
-      <navbar />
-    </v-app-bar>
-
+    <Navbar /> <!-- Composant Navbar -->
     
-   
+    <router-view /> <!-- Affiche la vue active -->
 
+    <Footer /> <!-- Composant Footer -->
+    
     <!-- Ou un bouton pour naviguer vers Add Todo -->
     <button @click="goToAddView">Go to Add Todo</button>
-
-    <!-- Zone pour afficher le contenu des vues -->
-    <router-view></router-view>
-
-    <!-- Pied de page -->
-    <v-footer>
-      <Footer />
-    </v-footer>
-  </v-app>
+   <!-- Bouton pour naviguer vers la page d'ajout de tâche -->
+   <button @click="goToAddView">Go to Add Todo</button>
+   </v-app>
 </template>
 
 <script>
-// Importation des composants
-import Navbar from './components/Navbar.vue';
-import Footer from './components/Footer.vue';
-import TaskManager from './components/TaskManager.vue';
-import TaskList from './components/TaskList.vue'; // Importation du composant TaskList
+import Footer from "./components/Footer.vue";
+import Navbar from "./components/Navbar.vue";
 
 export default {
+  components: { Navbar, Footer },
   name: 'App',
-  components: {
-    Navbar,
-    Footer,
-    TaskManager, // Ajouter le composant TaskManager
-    TaskList     // Ajouter le composant TaskList
-  },
   methods: {
     // Méthode pour naviguer vers la page AddTodo
     goToAddView() {
-      this.$router.push('/add');
+      this.$router.push('/add'); // Navigue vers la page d'ajout de tâche
     }
   }
 }
 </script>
 
 <style>
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; 
+}
+
+v-footer {
+  margin-top: auto; 
 }
 </style>
