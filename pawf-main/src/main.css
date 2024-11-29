@@ -229,3 +229,29 @@ input:checked ~ .bubble::after {
 	text-decoration: line-through;
 	color: var(--grey);
 }
+.add-task-container {
+	display: flex;
+	gap: 8px;
+	margin-top: 10px;
+  }
+  
+  .add-task-container input {
+	flex: 1;
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+  }
+  
+  .add-task-container button {
+	padding: 8px 12px;
+	background-color: #6c757d;
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+  }
+  
+  .add-task-container button:hover {
+	background-color: #5a6268;
+  }
+  

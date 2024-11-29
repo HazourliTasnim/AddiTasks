@@ -51,17 +51,15 @@ export default {
       const firstDay = new Date(this.currentYear, this.currentMonth, 1).getDay();
       const lastDate = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
 
-      // Ajouter des jours vides pour aligner avec le premier jour du mois
       for (let i = 0; i < firstDay; i++) {
         days.push({ day: "", date: null });
       }
 
-      // Ajouter les jours du mois
       for (let i = 1; i <= lastDate; i++) {
         const date = new Date(this.currentYear, this.currentMonth, i);
         days.push({
           day: i,
-          date: this.formatDate(date), // Format local corrigé
+          date: this.formatDate(date),
           isToday: this.isToday(date),
         });
       }
@@ -85,14 +83,12 @@ export default {
       );
     },
     formatDate(date) {
-      // Générer une date locale sans décalage (format : YYYY-MM-DD)
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
       const day = String(date.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
     },
     formatSelectedDate(date) {
-      // Transformer une date au format YYYY-MM-DD en texte lisible
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
     },
@@ -114,20 +110,18 @@ export default {
     },
     selectDate(date) {
       this.selectedDate = date;
-      this.loadTasksForDate(date); // Charge les tâches pour la date sélectionnée
+      this.loadTasksForDate(date);
     },
     loadTasksForDate(date) {
-      // Charger les tâches depuis le localStorage
       const storedTasks = localStorage.getItem(date);
       this.tasks = storedTasks ? JSON.parse(storedTasks) : [];
     },
     goToAddView() {
       if (this.selectedDate) {
-        // Redirige vers la vue d'ajout avec la date sélectionnée
         this.$router.push({
-          name: "add-view", // Nom de la route
-          query: { date: this.selectedDate }, // Date comme paramètre de requête
-        }).catch(err => console.error('Erreur de navigation:', err)); // Gestion d'erreur de navigation
+          name: "add-view",
+          query: { date: this.selectedDate }, // Paramètre de date
+        });
       } else {
         alert("Veuillez sélectionner une date avant d'ajouter une tâche !");
       }
@@ -135,6 +129,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .calendar-container {
@@ -176,11 +171,11 @@ export default {
 }
 
 .day:hover {
-  background-color: #f0f0f0;
+  background-color: #9773a3;
 }
 
 .is-today {
-  background-color: #4caf50;
+  background-color: #b83697;
   color: white;
 }
 
@@ -203,7 +198,7 @@ export default {
 button {
   padding: 10px 15px;
   margin-top: 10px;
-  background-color: #4caf50;
+  background-color: #671b6d;
   color: white;
   border: none;
   cursor: pointer;
@@ -211,6 +206,6 @@ button {
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #a65dc7;
 }
 </style>

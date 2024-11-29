@@ -4,8 +4,6 @@ import AboutView from '../views/AboutView.vue';
 import ContactView from '../views/ContactView.vue';
 import LoginView from '@/views/LoginView.vue';
 import RegisterView from '@/views/RegisterView.vue';
-import TodoCalendar from '../views/TodoCalendar.vue';
-import AddView from '@/views/AddView.vue';  // Page pour ajouter une tâche
 
 const routes = [
   {
@@ -33,19 +31,6 @@ const routes = [
     name: 'register',
     component: RegisterView,
   },
-  {
-    path: '/todo-calendar',
-    name: 'TodoCalendar',
-    component: TodoCalendar,
-  },
-  {
-    path: '/add', // Page pour ajouter une tâche
-    name: 'add-view',
-    component: AddView,  // Le composant de la page d'ajout
-    props: route => ({ date: route.query.date }),  
-  },
- 
-
 ];
 
 const router = createRouter({

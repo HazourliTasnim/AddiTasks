@@ -27,16 +27,10 @@
         </div>
       </div>
     </div>
-    <h1>Bienvenue sur la To-Do List</h1>
-    <p>Pour afficher le calendrier, cliquez sur le bouton ci-dessous.</p>
-    <router-link to="/todo-calendar">
-      <button>Calendrier</button>
-    </router-link>
+
     <!-- Features Component -->
     <Features />
-
   </div>
-
 </template>
 
 <script>
@@ -93,17 +87,5 @@ export default {
   color: black;
   transform: scale(1.1);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #45a049;
-}
 }
 </style>
