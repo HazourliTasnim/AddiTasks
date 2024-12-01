@@ -2,7 +2,7 @@
   <v-container>
     <v-row align="center" justify="center">
       <v-col cols="12" sm="10">
-        <v-card style="border: 2xp solid red;" class="elevation-6 mt-10">
+        <v-card style="margin-bottom: 200px; " class="elevation-6 ">
           <v-window v-model="step">
             <!-- Login Page -->
             <v-window-item :value="1">
@@ -10,11 +10,11 @@
                 <v-col cols="12" md="6">
                   <v-card-text class="mt-15">
                     <img :src="logoo" alt="Logo" width="70px" class="mt-n9" />
-                    <h1 class="text-center mb-5 mt-2" style="color:hsl(268, 70%, 30%)">Bienvenue de nouveau !</h1>
-                    <h5 class="text-center text-grey mb-n10">
+                    <h2 class="text-center mb-5 mt-2" style="color:hsl(268, 70%, 30%)">Bienvenue de nouveau !</h2>
+                    <h6 class="text-center text-grey mb-n10">
                       Connectez-vous à votre compte pour continuer à gérer<br />
                       vos tâches efficacement.
-                    </h5>
+                    </h6>
                     <v-row align="center" justify="center">
                       <v-col cols="12" sm="8">
                         <v-text-field
@@ -68,10 +68,10 @@
                 <v-col cols="12" md="6" class="purple_bg" style="border-bottom-left-radius: 200px !important">
                   <div style="text-align: center; padding: 180px 0;">
                     <v-card-text class="text-white">
-                      <h3 class="text-center mb-5">Pas encore inscrit(e) ?</h3>
-                      <h5 class="text-center mb-3 ">
+                      <h5 class="text-center mb-5">Pas encore inscrit(e) ?</h5>
+                      <h6 class="text-center mb-3 ">
                         Créez un compte pour commencer à organiser vos tâches et atteindre vos objectifs.
-                      </h5>
+                      </h6>
                     </v-card-text>
                     <div class="text-center">
                    <v-btn tile outlined dark class="custom-v-btn" @click="step++" > S'inscrire</v-btn>
@@ -86,10 +86,10 @@
                 <v-col cols="12" md="6" class="purple_bg " style="border-bottom-right-radius: 200px !important">
                   <div style="text-align: center; padding: 180px 0;">
                     <v-card-text class="text-white mt-10">
-                      <h3 class="text-center mb-5 ">Déjà inscrit(e) ?</h3>
-                      <h5 class="text-center ">
+                      <h4 class="text-center mb-5 ">Déjà inscrit(e) ?</h4>
+                      <h6 class="text-center ">
                         Connectez-vous à votre compte pour continuer à gérer vos tâches.
-                      </h5>
+                      </h6>
                     </v-card-text>
                     <div class="text-center">
                    <v-btn
@@ -105,10 +105,10 @@
                 <v-col cols="12" md="6">
                   <v-card-text class="mt-12">
                     <img :src="logoo" alt="Logo" width="70px" class="mt-n9" />
-                    <h1 class="text-center mb-4" style="color:hsl(268, 70%, 30%)">Créer un compte</h1>
-                    <h5 class="text-center text-grey">
+                    <h2 class="text-center mb-4" style="color:hsl(268, 70%, 30%)">Créer un compte</h2>
+                    <h6 class="text-center text-grey">
                       Inscrivez-vous pour organiser votre emploi du temps et vos objectifs.
-                    </h5>
+                    </h6>
                     <v-row align="center" justify="center">
                       <v-col cols="12" sm="8">
                         <v-row>
@@ -188,8 +188,10 @@ import { VContainer, VRow, VCol, VCard, VTextField, VCheckbox, VBtn, VIcon } fro
 import  'vuetify/styles';
 import axios from "axios";
 import logoo from '@/assets/logo.png';
+import {  onMounted, watch  } from 'vue';
+import { useRoute } from 'vue-router';
 
-
+const route = useRoute(); // Call useRoute inside setup() to get access to route parameters
 const step = ref(2);
 const name = ref("");
 const surname = ref("");
@@ -197,18 +199,39 @@ const email = ref("");
 const password = ref("");
 const rememberMe = ref(false);
 const acceptTerms = ref(false);
+axios.defaults.withCredentials = true;
+const updateStep = () => {
+  if (route.query.mode === 'signup') {
+    step.value = 2; // Show the signup form
+  } else {
+    step.value = 1; // Default to the login form
+  }
+};
+
+// Run on component mount
+onMounted(() => {
+  updateStep(); // Initial check on load
+});
+
+// Watch for changes in the route object and update the step
+watch(route, updateStep, { immediate: true });
 
 const rules = {
   required: (value) => !!value || "Vous devez accepter les termes et conditions.",
 };
+
+//login route
 const login = async () => {
   try {
     const response = await axios.post("http://localhost:3000/login", {
       email: email.value,
       password: password.value,
-      rememberMe
     });
     alert(response.data.message);
+
+    if (response.status === 200) {
+      window.location.href = "/dashboard"; // Redirection vers l'espace privé
+    }
   } catch (error) {
     alert(error.response?.data?.message || "Une erreur est survenue");
   }
@@ -228,7 +251,6 @@ const signup = async () => {
     alert(error.response?.data?.message || "Une erreur est survenue");
   }
 };
-
 </script>
 
 <style >
@@ -277,5 +299,33 @@ v-checkbox input {
 }
 
 
+.dark-mode {
+  background-color: #ece7e7;
+  color: #ffffff;
+}
+
+.dark-mode .v-card {
+  background-color: #484747;
+  color: #ffffff;
+}
+
+.dark-mode .v-text-field input {
+  background-color: #333;
+  color: #ffffff;
+}
+
+.dark-mode .v-btn {
+  background-color: #444;
+  color: #ffffff;
+}
+
+.dark-mode .terms-link {
+  color: #bbb;
+}
+.dark-mode .purple_bg {
+  background-color: hsl(267, 34%, 55%);
+}
 </style>
+
+
 

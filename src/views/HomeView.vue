@@ -15,7 +15,7 @@
               </p>
 
               <!-- Bouton -->
-              <router-link to="/register" class="custom-btn btn btn-lg mt-3 start">Démarrez maintenant</router-link>
+              <router-link to="/auth?mode=signup" class="custom-btn btn btn-lg mt-3 start">Démarrez maintenant</router-link>
             </div>
           </div>
 
@@ -41,6 +41,8 @@ export default {
   name: 'HomeView',
   components: { Features, }
 }
+
+
 </script>
 
 <style scoped>

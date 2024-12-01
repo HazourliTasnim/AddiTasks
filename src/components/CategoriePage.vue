@@ -133,30 +133,41 @@
   </script>
   
   <style scoped>
+  /* Container principal qui englobe tout le contenu */
   .categories-container {
-    margin: 20px;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 20px;
+    margin-left: 250px; /* Espace pour la sidebar */
+    padding: 20px;
+    flex-grow: 1;
   }
   
+  /* Organisation des catégories en lignes */
   .categories-row {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
+    width: 100%;
   }
   
+  /* Style de chaque boîte de catégorie */
   .category-box {
     border: 1px solid #ccc;
-    padding: 20px;
     border-radius: 8px;
-    flex: 1; /* Chaque boîte prendra une taille égale */
+    padding: 20px;
     margin: 10px;
-    transition: transform 0.2s;
-    max-height: 350px; /* Limite la hauteur de la catégorie */
-    overflow-y: auto; /* Ajoute une scrollbar verticale si le contenu dépasse la hauteur */
+    flex: 1 1 calc(33.333% - 20px); /* Prend 33% de la largeur avec des marges */
+    max-width: 300px; /* Limite la largeur maximale de chaque boîte */
+    box-sizing: border-box;
+    transition: transform 0.3s ease-in-out;
+    max-height: 350px; /* Limite la hauteur de chaque catégorie */
+    overflow-y: auto; /* Scroll vertical si contenu dépasse */
+    scroll-behavior: smooth; 
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
   
-  /* Personnalisation des barres de défilement */
   .category-box::-webkit-scrollbar {
     width: 8px;
   }
@@ -170,89 +181,86 @@
     background-color: rgba(0, 0, 0, 0.4);
   }
   
+  /* Effet de survol */
   .category-box:hover {
     transform: scale(1.05);
   }
   
+  /* Titre des catégories */
   .category-box h3 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
     color: #333;
+    text-transform: uppercase;
+    font-weight: bold;
   }
   
-  /* Style spécifique pour chaque catégorie */
-  .category-box.travail {
-    background-color: #cb6ce6; /* Rouge pour Travail */
-  }
-  
-  .category-box.personnel {
-    background-color: #b28cc5; /* Vert pour Personnel */
-  }
-  
-  .category-box.etude {
-    background-color: #845d8f; /* Bleu pour Etude */
-  }
-  
-  .category-box.maison {
-    background-color: #d89ed8; /* Jaune pour Maison */
-  }
-  
-  .category-box.autre {
-    background-color: #894e97; /* Violet pour Autre */
-  }
-  
-  .category-box.loisirs {
-    background-color: #c56ab3; /* Orange pour Loisirs */
-  }
-  
+  /* Liste des tâches */
   .category-box ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
   }
   
   .category-box ul li {
-    margin: 5px 0;
-    color: #bd9494;
+    margin: 10px 0;
+    color: #333;
+    font-size: 1rem;
+    font-weight: 500;
   }
   
-  /* Style spécifique pour les boutons, en fonction des catégories */
+  /* Boutons d'ajout de tâche */
   .button {
-    margin-top: 10px;
-    padding: 8px 16px;
-    color: #333;
+    margin-top: 20px;
+    padding: 10px 20px;
+    color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .button.travail {
-    background-color: #62356d70; /* Rouge pour Travail */
-  }
-  
-  .button.personnel {
-    background-color: #62356d70; /* Vert pour Personnel */
-  }
-  
-  .button.etude {
-    background-color: #62356d70; /* Bleu pour Etude */
-  }
-  
-  .button.maison {
-    background-color: #62356d70; /* Jaune pour Maison */
-  }
-  
-  .button.autre {
-    background-color: #b37ac9; /* Violet pour Autre */
-  }
-  
-  .button.loisirs {
-    background-color: #b37ac9; /* Orange pour Loisirs */
+    background-color: #922e92; /* Couleur principale */
+    transition: background-color 0.3s ease-in-out;
   }
   
   .button:hover {
-    background-color: #b06bb0;
-    color: #333;
+    background-color: #48203c3c; /* Effet de survol */
+  }
+  
+  /* Couleur spécifique pour chaque catégorie */
+  .category-box.travail {
+    background-color: #cb6ce6;
+  }
+  
+  .category-box.personnel {
+    background-color: #b28cc5;
+  }
+  
+  .category-box.etude {
+    background-color: #845d8f;
+  }
+  
+  .category-box.maison {
+    background-color: #d89ed8;
+  }
+  
+  .category-box.autre {
+    background-color: #894e97;
+  }
+  
+  .category-box.loisirs {
+    background-color: #c56ab3;
+  }
+  
+  /* Media Query pour les petits écrans (tablettes, smartphones) */
+  @media screen and (max-width: 768px) {
+    .categories-container {
+      margin-left: 10; /* Enlever l'espace pour la sidebar */
+    }
+  
+    .category-box {
+      flex: 1 1 100%; 
+      max-width: none; 
+      height: auto; 
+    }
   }
   </style>
   
