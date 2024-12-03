@@ -1,353 +1,497 @@
 <template>
-    <div class="container">
-      <!-- Box for "New Task" -->
-      <div class="title-box">
-        <h1 class="title">Nouvelle tâche</h1>
-        <button class="close-btn" @click="closeBox">X</button>
+  <div>
+    <!-- Sidebar Button to Open the Form -->
+    <button @click="openForm" class="sidebar-btn">Ajouter Tâche</button>
+
+    <!-- Form Container -->
+    <transition name="fade" @before-enter="beforeEnter" @enter="enter" @leave="leave">
+      <div v-if="formVisible" class="modal-container">
+        <!-- Modal Window -->
+        <div class="modal-content">
+          <!-- Form Header -->
+          <h2 class="form-title">Créer une Nouvelle Tâche</h2>
+
+          <!-- Form -->
+          <form @submit.prevent="handleSubmit">
+            <!-- Task Name -->
+            <div class="input-group">
+              <label for="taskName">Nom de la tâche *</label>
+              <input
+                type="text"
+                id="taskName"
+                v-model="task.name"
+                placeholder="Entrez le nom de la tâche"
+              />
+              <span v-if="!task.name && isSubmitted" class="error">Ce champ est obligatoire.</span>
+            </div>
+
+            <!-- Category Selection -->
+            <div class="input-group">
+              <label>Catégorie *</label>
+              <div class="categories">
+                <div
+                  v-for="category in categories"
+                  :key="category.name"
+                  :class="['category-item', { selected: task.category === category.name }]"
+                  @click="task.category = category.name"
+                >
+                  <i :class="category.icon"></i> {{ category.name }}
+                </div>
+              </div>
+              <span v-if="!task.category && isSubmitted" class="error">Veuillez choisir une catégorie.</span>
+            </div>
+
+            <!-- Date -->
+            <div class="input-group">
+              <label for="date">Date *</label>
+              <input type="date" id="date" v-model="task.date" />
+              <span v-if="!task.date && isSubmitted" class="error">Veuillez sélectionner une date.</span>
+            </div>
+
+            <!-- Time -->
+            <div class="input-group">
+              <label for="time">Heure (Optionnel)</label>
+              <input type="time" id="time" v-model="task.time" />
+            </div>
+
+            <!-- Importance Level -->
+            <div class="input-group">
+              <label>Niveau d'importance</label>
+              <div class="importance-levels">
+                <div
+                  v-for="level in importanceLevels"
+                  :key="level.value"
+                  :class="['importance-level', { selected: task.importance === level.value }]"
+                  @click="selectImportance(level.value)"
+                >
+                  {{ level.label }}
+                </div>
+              </div>
+
+              <!-- Progress Bar -->
+              <div class="progress-bar">
+                <div
+                  class="progress"
+                  :style="{ width: progressBarWidth + '%', backgroundColor: progressBarColor }"
+                >
+                  <span class="progress-label">{{ importanceLabel }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="button-group">
+              <button type="button" class="btn btn-cancel" @click="resetForm">Annuler</button>
+              <button type="submit" class="btn btn-add">Ajouter</button>
+            </div>
+          </form>
+        </div>
       </div>
-  
-      <!-- Form box -->
-      <div class="form-box">
-        <form @submit.prevent="handleSubmit">
-          <!-- Task Name Field with violet border -->
-          <div class="form-group">
-            <label for="taskName">Nom de la tâche</label>
-            <div class="input-box">
-                <input type="text" id="taskName" v-model="taskName" />
+    </transition>
+
+    <!-- Task List Preview -->
+    <div class="task-list">
+      <h3>Liste des Tâches</h3>
+      <div v-for="(task, index) in tasks" :key="index" class="task-card">
+        <div class="task-info">
+          <i :class="getCategoryIcon(task.category)" class="task-category-icon"></i>
+          <div class="task-details">
+            <h4>{{ task.name }}</h4>
+            <p>{{ task.category }} - {{ task.date }}</p>
+          </div>
+        </div>
+        <div class="task-progress">
+          <div class="progress-bar">
+            <div class="progress"
+              :style="{ width: task.importance === 'low' ? '33%' : task.importance === 'medium' ? '70%' : '100%', backgroundColor: getImportanceColor(task.importance) }">
             </div>
           </div>
-  
-          <!-- Category Selection with clickable boxes -->
-          <div class="form-group">
-            <label>Catégorie</label>
-            <div class="category-box">
-              <div
-                v-for="category in categories"
-                :key="category"
-                :class="['category', { selected: task.category === category }]"
-                @click="task.category = category"
-              >
-                {{ category }}
-              </div>
-            </div>
-          </div>
-  
-          <!-- Importance Level Selection -->
-          <div class="form-group">
-            <label>Niveau d'importance</label>
-            <div class="importance-boxes">
-              <div 
-                class="importance-box"
-                :class="{ selected: task.importance === 'less' }"
-                @click="selectImportance('less')"
-              >
-                Moins important
-              </div>
-              <div 
-                class="importance-box"
-                :class="{ selected: task.importance === 'normal' }"
-                @click="selectImportance('normal')"
-              >
-                Important
-              </div>
-              <div 
-                class="importance-box"
-                :class="{ selected: task.importance === 'urgent' }"
-                @click="selectImportance('urgent')"
-              >
-                Urgent
-              </div>
-            </div>
-  
-            <!-- Progress bar that changes based on importance -->
-            <div class="progress-bar">
-              <div
-                class="progress"
-                :style="{ width: progressBarWidth + '%' }"
-              >
-                <span class="progress-label">
-                  {{ importanceLabel }}
-                </span>
-              </div>
-            </div>
-          </div>
-  
-          <!-- Buttons: Add and Cancel -->
-          <div class="button-group">
-            <button type="submit" class="btn btn-cancel">Annuler</button>
-            <button type="button" @click="cancel" class="btn btn-add">Ajouter</button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        task: {
-          name: '',
-          category: '',
-          importance: 'less', // Default importance
-        },
-        categories: ['Travail', 'Personnel', 'Etude', 'Maison', 'Autre', 'Loisirs'], // Added "Loisirs"
-        progressBarWidth: 33, // Default progress
-        importanceLabel: 'Moins important', // Default label
-        selectedDate: this.$route.query.date, // Retrieving date from the route query parameter
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      task: {
+        name: '',
+        category: '',
+        importance: 'low',
+        date: '',
+        time: '',
+      },
+      tasks: [],
+      categories: [
+        { name: 'Travail', icon: 'fas fa-briefcase' },
+        { name: 'Etude', icon: 'fas fa-book' },
+        { name: 'Maison', icon: 'fas fa-home' },
+        { name: 'Personnel', icon: 'fas fa-user' },
+        { name: 'Loisirs', icon: 'fas fa-gamepad' },
+        { name: 'Autre', icon: 'fas fa-exclamation-circle' },
+      ],
+      importanceLevels: [
+        { value: 'low', label: 'Moins important' },
+        { value: 'medium', label: 'Important' },
+        { value: 'high', label: 'Urgent' },
+      ],
+      progressBarWidth: 33,
+      progressBarColor: '#9b59b6',
+      importanceLabel: 'Moins Important',
+      formVisible: false,
+      isSubmitted: false,
+    };
+  },
+  methods: {
+    openForm() {
+      this.formVisible = true;
+    },
+    handleSubmit() {
+      this.isSubmitted = true;
+      if (!this.task.name || !this.task.category || !this.task.date) return;
+      this.tasks.push({ ...this.task });
+      this.resetForm();
+    },
+    selectImportance(level) {
+      this.task.importance = level;
+      const settings = {
+        low: { width: 33, color: '#9b59b6', label: 'Moins Important' },
+        medium: { width: 70, color: '#f1c40f', label: 'Important' },
+        high: { width: 100, color: '#e74c3c', label: 'Urgent' },
       };
+      this.progressBarWidth = settings[level].width;
+      this.progressBarColor = settings[level].color;
+      this.importanceLabel = settings[level].label;
     },
-    mounted() {
-      console.log('Date reçue dans AddView:', this.selectedDate); // Verifying if date is received correctly
+    resetForm() {
+      this.task = { name: '', category: '', importance: 'low', date: '', time: '' };
+      this.progressBarWidth = 33;
+      this.progressBarColor = '#9b59b6';
+      this.importanceLabel = 'Moins Important';
+      this.isSubmitted = false;
+      this.formVisible = false;
     },
-    methods: {
-      handleSubmit() {
-        console.log('Tâche ajoutée:', this.task);
-        this.resetForm();
-      },
-      cancel() {
-        this.resetForm();
-      },
-      selectImportance(importance) {
-        this.task.importance = importance;
-        if (importance === 'less') {
-          this.progressBarWidth = 33;
-          this.importanceLabel = 'Moins important';
-        } else if (importance === 'normal') {
-          this.progressBarWidth = 66;
-          this.importanceLabel = 'Important';
-        } else if (importance === 'urgent') {
-          this.progressBarWidth = 100;
-          this.importanceLabel = 'Urgent';
-        }
-      },
-      closeBox() {
-        console.log('Fermer la boîte "Nouvelle tâche"');
-      },
-      resetForm() {
-        this.task.name = '';
-        this.task.category = '';
-        this.task.importance = 'less';
-        this.progressBarWidth = 33;
-        this.importanceLabel = 'Moins important';
+    beforeEnter(el) {
+      el.style.opacity = 0;
+      el.style.transform = 'translateY(20px)';
+    },
+    enter(el, done) {
+      el.offsetHeight; // trigger reflow
+      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      el.style.opacity = 1;
+      el.style.transform = 'translateY(0)';
+      done();
+    },
+    leave(el, done) {
+      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      el.style.opacity = 0;
+      el.style.transform = 'translateY(20px)';
+      done();
+    },
+    getCategoryIcon(category) {
+      const categoryObj = this.categories.find(c => c.name === category);
+      return categoryObj ? categoryObj.icon : 'fas fa-question';
+    },
+    getImportanceColor(importance) {
+      switch (importance) {
+        case 'low':
+          return '#9b59b6';
+        case 'medium':
+          return '#f1c40f';
+        case 'high':
+          return '#e74c3c';
+        default:
+          return '#9b59b6';
       }
     },
-  };
-  </script>
-  
-  <style scoped>
-  /* Container for centering the form */
-  .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f5f5f5;
-    width: 100%;
-    padding: 20px;
-  }
-  
-  /* Box for "New Task" */
-  .title-box {
-    background-color: #e8e2eb; /* Light purple */
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-  
-  .title {
-    font-size: 24px;
-    color: #6a1b9a;
-  }
-  
-  .close-btn {
-    background-color: #e8e2eb;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    color: #6a1b9a;
-  }
-  
-  /* Form box */
-  .form-box {
-    background-color: #e8e2eb; /* Light purple */
-    padding: 30px;
-    border-radius: 8px;
-    width: 100%;
-    max-width: 600px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  /* Form fields */
-  .form-group {
-    margin-bottom: 20px;
-    text-align: left;
-  }
-  
-  .form-group label {
-    display: block;
-    font-weight: bold;
-    color: #6a1b9a;
-  }
-  
-  /* Task name input box with violet border */
-  .input-box {
-    border: 2px solid #6a1b9a;
-    padding: 5px;
-    border-radius: 10px;
-  }
-  
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: none;
-    box-sizing: border-box;
-  }
-  
-  /* Category selection: space between boxes (3 items per row) */
-  .category-box {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-top: 10px;
-  }
-  
-  .category {
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    color: #6a1b9a;
-    border: 2px solid #6a1b9a;
-    transition: background-color 0.3s ease;
-    text-align: center;
-  }
-  
-  .category:hover {
-    background-color: #cb6ce6;
-  }
-  
-  .category.selected {
-    background-color: #6a1b9a;
-    color: #fff;
-  }
-  
-  /* Importance level selection: adjusted spacing */
-  .importance-boxes {
-    display: flex;
-    justify-content: space-evenly;
-    margin-top: 1px;
-    gap: 10px;
-  }
-  
-  .importance-box {
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    color: #6a1b9a;
-    border: 2px solid #6a1b9a;
-    transition: background-color 0.3s ease;
-    width: 30%;
-    text-align: center;
-  }
-  
-  .importance-box:hover {
-    background-color: #cb6ce6;
-  }
-  
-  .importance-box.selected {
-    background-color: #6a1b9a;
-    color: white;
-  }
-  
-  /* Progress bar - increased width */
-  .progress-bar {
-    background-color: #ddd;
-    border-radius: 5px;
-    height: 30px;
-    margin-top: 15px;
-    width: 100%;
-  }
-  
-  .progress {
-    background-color: #6a1b9a;
-    height: 100%;
-    border-radius: 5px;
-    position: relative;
-  }
-  
-  .progress-label {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-  }
-  
-  /* Buttons */
-  .button-group {
-    display: flex;
-    justify-content: flex-end; /* Align buttons to the right */
-    margin-top: 20px;
-    gap: 10px;
-  }
-  
-  .btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .btn-add {
-    background-color: #6a1b9a;
-    color: white;
-  }
-  
-  .btn-cancel {
-    background-color: #b93030;
-    color: white;
-  }
-  
-  .btn:hover {
-    opacity: 0.9;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 600px) {
-    .category-box {
-      grid-template-columns: 1fr 1fr;
-    }
-  
-    .importance-boxes {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .importance-box {
-      width: 80%;
-    }
-  
-    .category {
-      width: 100%;
-    }
-  
-    .button-group {
-      flex-direction: column;
-      align-items: center;
-    }
-  }
-  </style>
-  
+  },
+};
+</script>
+
+<style scoped>
+/* Global Styles for Dark Purple Theme */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #2d2d2d;
+  color: #f5f5f5;
+}
+
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(148, 144, 144, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #594462;
+  padding: 40px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 900px;
+  position: relative;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  color: white;
+  overflow-y: auto;
+}
+
+.sidebar-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #9b59b6;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 50px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 999;
+}
+
+.sidebar-btn:hover {
+  background-color: #8e44ad;
+}
+
+h2.form-title {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 24px;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.input-group .error {
+  color: #e74c3c;
+  font-size: 14px;
+}
+
+.categories {
+  display: flex;
+  justify-content: space-around;
+}
+
+.category-item {
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.category-item:hover {
+  background-color: #6c4f73;
+}
+
+.category-item.selected {
+  background-color: #9b59b6;
+}
+
+.importance-levels {
+  display: flex;
+  justify-content: space-around;
+}
+
+.importance-level {
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.importance-level.selected {
+  background-color: #9b59b6;
+}
+/* Task Card Styles */
+.task-list {
+  margin: 50px auto; /* Centrage horizontal et marge en haut */
+  padding: 20px;
+  max-width: 60%;
+  background-color: #64456d;
+  border-radius: 10px;
+}
+
+
+.task-card {
+  background-color: #594462; /* Dark purple background for the card */
+  color: white;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(207, 191, 208, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.task-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(252, 236, 255, 0.4);
+}
+
+.task-info {
+  display: flex;
+  align-items: center;
+}
+
+.task-category-icon {
+  font-size: 30px;
+  margin-right: 15px;
+  color: #9b59b6;
+}
+
+.task-details h4 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.task-details p {
+  font-size: 14px;
+  margin-top: 5px;
+  color: #ccc;
+}
+
+.task-progress {
+  flex-shrink: 0;
+  width: 100px;
+}
+
+.progress-bar {
+  background-color: #ddd;
+  height: 10px;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.progress {
+  height: 100%;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 30px;
+  color: white;
+  font-weight: bold;
+}
+
+/* Category Icons Styling */
+.task-category-icon {
+  color: #9b59b6;
+  transition: color 0.3s ease;
+}
+
+.task-category-icon:hover {
+  color: #8e44ad;
+}
+
+.task-info .category-item {
+  background-color: #9b59b6;
+  border-radius: 5px;
+  padding: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.task-info .category-item:hover {
+  background-color: #8e44ad;
+}
+
+/* Progress Bar Styling */
+.progress {
+  background-color: #e74c3c;
+  width: 50%;
+  border-radius: 5px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.progress.low {
+  background-color: #9b59b6;
+}
+
+.progress.medium {
+  background-color: #f1c40f;
+}
+
+.progress.high {
+  background-color: #e74c3c;
+}
+
+/* Task Card Text Colors */
+.task-details h4 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.task-details p {
+  color: #ccc;
+}
+
+.task-card .task-info {
+  flex-grow: 1;
+}
+
+
+.progress-bar {
+  background-color: #ddd;
+  height: 10px;
+  width: 100%;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+.progress {
+  height: 100%;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 30px;
+  color: white;
+  font-weight: bold;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn-add {
+  background-color: #9b59b6;
+  color: white;
+}
+
+.btn:hover {
+  opacity: 0.8;
+}
+</style>
