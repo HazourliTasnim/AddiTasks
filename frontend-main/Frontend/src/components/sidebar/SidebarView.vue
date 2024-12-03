@@ -15,16 +15,14 @@
 
     <!-- Sidebar Links -->
     <SidebarLink to="/dashboard" icon="fas fa-columns">Tableau de bord</SidebarLink>
-    <SidebarLink to="/cat" icon="fas fa-tasks">Mes Tâches</SidebarLink>
-    <SidebarLink to="/todo" icon="fas fa-calendar">Calendrier</SidebarLink>
+    <SidebarLink to="/add" icon="fas fa-tasks">Mes Tâches</SidebarLink>
+    <SidebarLink to="/calendar" icon="fas fa-calendar">Calendrier</SidebarLink>
 
     <!-- Sidebar Buttons -->
     <button class="sidebar-button ajout" @click="goToAddView">
   <i class="fas fa-plus icon"></i>
   <span v-if="!collapsed" class="text">Ajouter Tâche</span>
 </button>
-
-
 
 
     <SidebarLink to="/profil" icon="fas fa-user">Profil</SidebarLink>
@@ -57,9 +55,6 @@ export default {
   methods: {
     goToAddView() {
       this.$router.push('/add'); // Naviguer vers la page "Ajouter Tâche"
-    },
-    goToTodoCalendar() {
-      this.$router.push('/todo'); // Naviguer vers la page "Calendrier"
     }
   },
   setup() {

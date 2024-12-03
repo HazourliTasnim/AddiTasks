@@ -3,7 +3,7 @@
       <!-- Box for "New Task" -->
       <div class="title-box">
         <h1 class="title">Nouvelle tâche</h1>
-        <button class="close-btn" @click="hideMessage">X</button>
+        <button class="close-btn" @click="closeBox">X</button>
       </div>
   
       <!-- Form box -->
@@ -31,19 +31,7 @@
               </div>
             </div>
           </div>
-    <!-- Date and Time Selection -->
-    <div class="form-group">
-          <label for="date">Date (Optionnel)</label>
-          <div class="input-box">
-            <input type="date" id="date" v-model="task.date" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="time">Heure (Optionnel)</label>
-          <div class="input-box">
-            <input type="time" id="time" v-model="task.time" />
-          </div>
-        </div>
+  
           <!-- Importance Level Selection -->
           <div class="form-group">
             <label>Niveau d'importance</label>
@@ -117,8 +105,8 @@
         console.log('Tâche ajoutée:', this.task);
         this.resetForm();
       },
-      hideMessage() {
-        this.showMessage=false;
+      cancel() {
+        this.resetForm();
       },
       selectImportance(importance) {
         this.task.importance = importance;
@@ -154,7 +142,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 115vh;
+    height: 100vh;
     background-color: #f5f5f5;
     width: 100%;
     padding: 20px;

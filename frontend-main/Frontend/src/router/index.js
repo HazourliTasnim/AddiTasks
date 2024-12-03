@@ -8,8 +8,6 @@ import UserTerms from '@/views/UserTerms.vue';
 import DashboardView from '@/views/DashboardView.vue';
 import AddView from '@/views/AddView.vue';
 import ProfilView from '@/views/ProfilView.vue';
-import TodoCalendar from '@/views/TodoCalendar.vue';
-import CategoriePage from '@/components/CategoriePage.vue';
 
 const routes = [
   {
@@ -57,22 +55,12 @@ const routes = [
     component: AddView, 
   },
   {
-    path: '/todo',
-    name: 'TodoCalendar',
-    component: TodoCalendar, 
-  },
-  {
     path: '/profil',
     name: 'Profil',
     component: ProfilView, 
    
   },
-  {
-    path: '/cat',
-    name: 'CategoriePage',
-    component: CategoriePage, 
-   
-  },
+ 
   ];
 
 
